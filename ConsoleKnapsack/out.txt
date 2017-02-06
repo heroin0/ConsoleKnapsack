@@ -1,0 +1,42 @@
+﻿сингл мутация, сингл скрещивание
+6 iterations, 8 ms
+114340 iterations, 2694 ms
+712 iterations, 18 ms
+4022 iterations, 92 ms
+3049 iterations, 97 ms
+400974 iterations, 13481 ms
+9343432 iterations, 396644 ms
+сингл мутация, дабл скрещивание
+21 iterations, 9 ms
+70930 iterations, 1697 ms
+901 iterations, 22 ms
+2092 iterations, 67 ms
+2672 iterations, 95 ms
+23261 iterations, 818 ms
+4770456 iterations, 199461 ms
+сингл мутация, битбайбит скрещивание
+
+3 iterations, 9 ms
+1826334 iterations, 33017 ms
+1455 iterations, 49 ms
+7869 iterations, 219 ms
+2198 iterations, 74 ms
+289379 iterations, 10013 ms
+348826 iterations, 13940 ms
+Халфмутация, сингл скрещивание
+
+3 iterations, 6 ms
+10 iterations, 0 ms
+58 iterations, 2 ms
+9538 iterations, 560 ms
+- -
+Халфмутация, дабл скрещивание
+2 iterations, 10 ms
+16 iterations, 0 ms
+356 iterations, 19 ms
+7161 iterations, 422 ms
+
+10 iterations, 10 ms
+23 iterations, 0 ms
+1409 iterations, 52 ms
+246001 iterations, 12189 ms
