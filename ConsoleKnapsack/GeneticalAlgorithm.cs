@@ -96,15 +96,8 @@ namespace GAMultidimKnapsack
             }
             var tempConfigs = CrossoverPool
                 .OrderByDescending(config => GetKnapsackCost(config))
-                //.Distinct() What we do if it's less than bca?
                 .Take(Convert.ToInt32(configsInPoolAmount))
                 .ToArray();
-
-            //var tempConfigsList = tempConfigs.Select(x => GetKnapsackCost(x)).ToList();
-            //tempConfigsList.ForEach(x => Console.Write(x.ToString() + " "));
-            //foreach (var x in tempConfigs) 
-            //Console.WriteLine("{0}\n",x);
-
             configsPool = tempConfigs;
 
             var tunningCoeff = 0.01;
