@@ -34,6 +34,8 @@ namespace GAMultidimKnapsack
             //averageIterations[testNumber].Add(iterationNumber);
         }
 
+       
+
         static void ProcessTestSet(string file)
         {
             using (StreamReader sr = new StreamReader(file))

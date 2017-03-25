@@ -39,8 +39,7 @@ namespace GAMultidimKnapsack
             activeMutation = myMt;
 
             bestConfigsAmount = configsInPoolAmount;
-            int[] emptyConfig = (new int[itemsAmount]).Select(x => 0).ToArray();
-            bestConfigs = (new KnapsackConfig[bestConfigsAmount]).Select(x => new KnapsackConfig(emptyConfig)).ToArray();//HACK
+            
             configsPool = new KnapsackConfig[configsInPoolAmount];
             this.mutationPercentage = mutationPercentage;
             maximalKnapsackCost = itemsCosts.Sum();
@@ -52,7 +51,6 @@ namespace GAMultidimKnapsack
         {
             try
             {
-
                 configsPool[0] = FirstApproachGenerate();
 
                 int active = 0, passive = 0;
@@ -68,12 +66,19 @@ namespace GAMultidimKnapsack
                 {
                     configsPool[i] = activeMutation(configsPool[0], rand);
                 }
+                int[] emptyConfig = (new int[itemsAmount]).Select(x => 0).ToArray();
+                bestConfigs = (new KnapsackConfig[bestConfigsAmount]).Select(x => new KnapsackConfig(emptyConfig)).ToArray();//HACK
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Bugs in initialization");
                 return;
             }
+        }
+
+        public void RestartAlgorithm(double flushPercent)
+        {
+            StartCycling();
         }
         public void MakeIteration()
         {

@@ -21,7 +21,7 @@ namespace GAMultidimKnapsack
         static void Algorithm(int itemsAmount, int dimensions, double maxCost, double[] restrictions, double[] costs, double[,] itemsSet)
         {
             int ConfigsAmount = 10;
-            double mutationPercent = 20;
+            double mutationPercent = 0.20;//FROM 0 TO 1
             GeneticalAlgorithm ga = new GeneticalAlgorithm(itemsAmount, dimensions, restrictions, costs, itemsSet, ConfigsAmount, GeneticalAlgorithm.TwoPointCrossover, GeneticalAlgorithm.SinglePointMutation, mutationPercent);
             int iterationNumber = 0;
 
@@ -43,6 +43,88 @@ namespace GAMultidimKnapsack
                 //  watch.Stop();
             }
             Console.WriteLine("Finished in {0}",iterationNumber);
+            Console.ReadKey();
+        }
+
+        static void multipleAlgorithms(int itemsAmount, int dimensions, double maxCost, double[] restrictions, double[] costs, double[,] itemsSet)//запускаемм несколько алгоритмов с разными приближениями
+        {
+            int ConfigsAmount = 10, algorithmsNumber = 3;
+            double mutationPercent = 0.20;
+
+            GeneticalAlgorithm[] gas = new GeneticalAlgorithm[algorithmsNumber];
+            for (int i = 0; i < algorithmsNumber; i++)//пока предположим, что первые приближения различны.
+                gas[i] = new GeneticalAlgorithm(itemsAmount, dimensions, restrictions, costs, itemsSet, ConfigsAmount, GeneticalAlgorithm.TwoPointCrossover, GeneticalAlgorithm.SinglePointMutation, mutationPercent);
+            int iterationNumber = 1;
+            var controlWatch = new Stopwatch();
+            controlWatch.Start();
+            while (!gas.Select(x => x.GetAbsoluteMaximalKnapsackCost()).ToArray().Contains(maxCost))
+            {
+                Parallel.ForEach(gas, ga =>
+              //foreach(GeneticalAlgorithm ga in gas)
+                 {
+                     ga.MakeIteration();
+                     if (iterationNumber % 10 == 0)
+                     {
+                         Console.WriteLine(iterationNumber + ") delta with avg is " + (maxCost - ga.GetAbsoluteAverageKnapsackCost()) + "\n delta with max is " + (maxCost - ga.GetAbsoluteMaximalKnapsackCost()));
+                         var bestCosts = ga.GetBestConfigsCosts();
+                         Console.WriteLine("Top 3 of the best configs pool are {0}, {1}, {2}",
+                             (maxCost - bestCosts[0]),
+                             (maxCost - bestCosts[1]),
+                             (maxCost - bestCosts[2]));
+                     }
+                 });
+                iterationNumber++;
+            }
+            controlWatch.Stop();
+            using (StreamWriter file1 = new StreamWriter(@"C:\Users\black_000\Documents\visual studio 2015\Projects\ConsoleKnapsack\ConsoleKnapsack\out.txt", true))
+                file1.WriteLine(iterationNumber + " iterations, " + controlWatch.ElapsedMilliseconds + " ms");
+        }
+
+        static void algorithmWithRestart(int itemsAmount, int dimensions, double maxCost, double[] restrictions, double[] costs, double[,] itemsSet)
+        {
+            int ConfigsAmount = 10, restartTime=500000, currentMaxValueLiveLength=0;
+            double PrevCost = 0; 
+            double mutationPercent = 0.20;//FROM 0 TO 1
+            GeneticalAlgorithm ga = new GeneticalAlgorithm(itemsAmount, dimensions, restrictions, costs, itemsSet, ConfigsAmount, GeneticalAlgorithm.TwoPointCrossover, GeneticalAlgorithm.SinglePointMutation, mutationPercent);
+            int iterationNumber = 0;
+
+            while (ga.GetAbsoluteMaximalKnapsackCost() != maxCost)
+            {
+                //var watch = new Stopwatch();
+                //watch.Start();
+                ga.MakeIteration();
+                iterationNumber++;
+                double tmp = ga.GetBestConfigsCosts()[0];
+                if (tmp != PrevCost)
+                {
+                    PrevCost = tmp;
+                    currentMaxValueLiveLength = 0;
+                }
+                else
+                {
+                    currentMaxValueLiveLength++;
+                }
+
+                if (iterationNumber % 10000 == 0)//Отрисовка
+                {
+                    Console.WriteLine(iterationNumber + ") delta with avg is " + (maxCost - ga.GetAbsoluteAverageKnapsackCost()) + "\n delta with max is " + (maxCost - ga.GetAbsoluteMaximalKnapsackCost()));
+                    var bestCosts = ga.GetBestConfigsCosts();
+                    Console.WriteLine("Top 3 of the best configs pool are {0}, {1}, {2}",
+                        (maxCost - bestCosts[0]),
+                        (maxCost - bestCosts[1]),
+                        (maxCost - bestCosts[2]));
+                }
+
+                if (currentMaxValueLiveLength==restartTime)
+                {
+                    ga.RestartAlgorithm();
+                    PrevCost = 0;
+                    currentMaxValueLiveLength = 0;
+                    Console.WriteLine("Restart");
+                }
+                //  watch.Stop();
+            }
+            Console.WriteLine("Finished in {0}", iterationNumber);
             Console.ReadKey();
         }
 
@@ -133,7 +215,7 @@ namespace GAMultidimKnapsack
             }
         }
 
-        static void ProcessTestSet(string inputFileData, string inputFileResults)
+        static void ProcessTestSet(string inputFileData, string inputFileResults)//WORK WITH IT!
         {
             using (StreamReader dataReader = new StreamReader(inputFileData))
             {
@@ -186,13 +268,14 @@ namespace GAMultidimKnapsack
                             .Select(x => Convert.ToDouble(x))
                             .ToList());
                     double[] restrictions = tempRestrictions.ToArray();
-                    Algorithm(itemsAmount, dimensions, maxCost, restrictions, costs, itemsSet);
+                    algorithmWithRestart(itemsAmount, dimensions, maxCost, restrictions, costs, itemsSet);
                     Thread.Sleep(3000);
                     maxValuations.Enqueue(0);
                     averageValuations.Enqueue(0);
                 }
             }
         }
+
 
         static void Main()
         {

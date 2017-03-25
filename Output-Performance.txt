@@ -1,0 +1,28 @@
+﻿Profiling started.
+Profiling process ID 7000 (ConsoleKnapsack).
+Starting data collection. The output file is C:\Users\black_000\Documents\Visual Studio 2015\Projects\ConsoleKnapsack\ConsoleKnapsack170309.vspx
+Profiler stopping.
+Stopping data collection.
+Profiler stopping.
+Merging collection data. Please wait...
+Data is saved in file C:\Users\black_000\Documents\Visual Studio 2015\Projects\ConsoleKnapsack\ConsoleKnapsack170309.vspx
+Profiling finished.
+Loaded symbols for C:\Windows\syswow64\ntdll.dll
+Loaded symbols for C:\Windows\syswow64\kernel32.dll
+Loaded symbols for C:\Windows\syswow64\mscoree.dll
+Loaded symbols for C:\Windows\Microsoft.NET\Framework\v4.0.30319\mscoreei.dll
+Loaded symbols for C:\Windows\Microsoft.NET\Framework\v4.0.30319\clr.dll
+Loaded symbols for C:\Windows\assembly\NativeImages_v4.0.30319_32\mscorlib\40571abae9422cd2ca6fafbbde1c3cdc\mscorlib.ni.dll
+Loaded symbols for C:\Users\black_000\Documents\Visual Studio 2015\Projects\ConsoleKnapsack\ConsoleKnapsack\bin\Release\ConsoleKnapsack.exe
+Loaded symbols for C:\WINDOWS\Microsoft.Net\assembly\GAC_MSIL\System.Core\v4.0_4.0.0.0__b77a5c561934e089\System.Core.dll
+Loaded symbols for C:\Windows\assembly\NativeImages_v4.0.30319_32\System.Core\f6ebd52be27fe627fed0d185c6a9c0d5\System.Core.ni.dll
+Loaded symbols for C:\WINDOWS\Microsoft.Net\assembly\GAC_32\mscorlib\v4.0_4.0.0.0__b77a5c561934e089\mscorlib.dll
+Loaded symbols for C:\Windows\syswow64\KernelBase.dll
+Loaded symbols for C:\Windows\System32\ntdll.dll
+Loaded symbols for C:\Windows\System32\wow64.dll
+Loaded symbols for C:\Windows\System32\wow64cpu.dll
+Loaded symbols for C:\Windows\syswow64\msvcr120_clr0400.dll
+Loaded symbols for C:\Windows\syswow64\combase.dll
+Loaded symbols for C:\Windows\Microsoft.NET\Framework\v4.0.30319\clrjit.dll
+Symbol information saved to report.
+Profiling complete.
