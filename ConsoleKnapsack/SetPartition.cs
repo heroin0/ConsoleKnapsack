@@ -82,13 +82,13 @@ namespace GAMultidimKnapsack
 
         static void algorithmWithRestart(int itemsAmount, int dimensions, double maxCost, double[] restrictions, double[] costs, double[,] itemsSet)
         {
-            int ConfigsAmount = 10, restartTime=500000, currentMaxValueLiveLength=0;
+            int ConfigsAmount = 10, restartTime=100000, currentMaxValueLiveLength=0;
             double PrevCost = 0; 
             double mutationPercent = 0.20;//FROM 0 TO 1
             GeneticalAlgorithm ga = new GeneticalAlgorithm(itemsAmount, dimensions, restrictions, costs, itemsSet, ConfigsAmount, GeneticalAlgorithm.TwoPointCrossover, GeneticalAlgorithm.SinglePointMutation, mutationPercent);
-            int iterationNumber = 0;
-
-            while (ga.GetAbsoluteMaximalKnapsackCost() != maxCost)
+            int iterationNumber = 0, endIteration=10000000;
+            List<double> resetPoints=new List<double>();
+            while (ga.GetAbsoluteMaximalKnapsackCost() != maxCost&&iterationNumber<endIteration)
             {
                 //var watch = new Stopwatch();
                 //watch.Start();
@@ -105,27 +105,35 @@ namespace GAMultidimKnapsack
                     currentMaxValueLiveLength++;
                 }
 
-                if (iterationNumber % 10000 == 0)//Отрисовка
-                {
-                    Console.WriteLine(iterationNumber + ") delta with avg is " + (maxCost - ga.GetAbsoluteAverageKnapsackCost()) + "\n delta with max is " + (maxCost - ga.GetAbsoluteMaximalKnapsackCost()));
-                    var bestCosts = ga.GetBestConfigsCosts();
-                    Console.WriteLine("Top 3 of the best configs pool are {0}, {1}, {2}",
-                        (maxCost - bestCosts[0]),
-                        (maxCost - bestCosts[1]),
-                        (maxCost - bestCosts[2]));
-                }
+                //if (iterationNumber % 10000 == 0)//Отрисовка
+                //{
+                //    Console.Write(iterationNumber + ") ");// delta with avg is " + (maxCost - ga.GetAbsoluteAverageKnapsackCost()) + "\n delta with max is " + (maxCost - ga.GetAbsoluteMaximalKnapsackCost()));
+                //    var bestCosts = ga.GetBestConfigsCosts();
+                //    Console.WriteLine("Top 3 of the best configs pool are {0}, {1}, {2}, {3}, {4}",
+                //        (maxCost - bestCosts[0]),
+                //        (maxCost - bestCosts[1]),
+                //        (maxCost - bestCosts[2]),
+                //        (maxCost - bestCosts[3]),
+                //        (maxCost - bestCosts[4]));
+                //}
 
                 if (currentMaxValueLiveLength==restartTime)
                 {
-                    ga.RestartAlgorithm();
+                    var restartPercent = 0.4;
+                    resetPoints.Add(maxCost - ga.GetBestConfigsCosts()[0]);
+                    ga.RestartAlgorithm(restartPercent);
                     PrevCost = 0;
                     currentMaxValueLiveLength = 0;
-                    Console.WriteLine("Restart");
+                    //Console.WriteLine("Restart");
+
                 }
                 //  watch.Stop();
             }
             Console.WriteLine("Finished in {0}", iterationNumber);
-            Console.ReadKey();
+            foreach (var x in resetPoints)
+                Console.Write("{0}, ",x);
+            Console.WriteLine(resetPoints.Count);
+            //Console.ReadKey();
         }
 
         static void TestAlgorithm()//Proof of concept

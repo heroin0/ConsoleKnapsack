@@ -12,7 +12,7 @@ namespace GAMultidimKnapsack
 
         public KnapsackConfig(int elementsAmount)
         {
-            CurrentConfiguration = new int[elementsAmount];
+            CurrentConfiguration = Enumerable.Repeat(-1, elementsAmount).ToArray();
         }
 
         public KnapsackConfig(int[] initConfig)

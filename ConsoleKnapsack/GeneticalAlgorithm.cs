@@ -39,7 +39,7 @@ namespace GAMultidimKnapsack
             activeMutation = myMt;
 
             bestConfigsAmount = configsInPoolAmount;
-            
+
             configsPool = new KnapsackConfig[configsInPoolAmount];
             this.mutationPercentage = mutationPercentage;
             maximalKnapsackCost = itemsCosts.Sum();
@@ -66,8 +66,9 @@ namespace GAMultidimKnapsack
                 {
                     configsPool[i] = activeMutation(configsPool[0], rand);
                 }
-                int[] emptyConfig = (new int[itemsAmount]).Select(x => 0).ToArray();
-                bestConfigs = (new KnapsackConfig[bestConfigsAmount]).Select(x => new KnapsackConfig(emptyConfig)).ToArray();//HACK
+                emptyBestConfigs();
+                //int[] emptyConfig = (new int[itemsAmount]).Select(x => 0).ToArray();
+                //bestConfigs = (new KnapsackConfig[bestConfigsAmount]).Select(x => new KnapsackConfig(emptyConfig)).ToArray();//HACK
             }
             catch (Exception ex)
             {
@@ -76,9 +77,52 @@ namespace GAMultidimKnapsack
             }
         }
 
+        void emptyBestConfigs()
+        {
+            int[] emptyConfig = (new int[itemsAmount]).Select(x => 0).ToArray();
+            bestConfigs = (new KnapsackConfig[bestConfigsAmount]).Select(x => new KnapsackConfig(emptyConfig)).ToArray();//HACK
+        }
         public void RestartAlgorithm(double flushPercent)
         {
-            StartCycling();
+            try
+            {
+                IndexOutOfRangeException ex = new IndexOutOfRangeException();//TODO: write exceptions class;
+                if (flushPercent < 0 || flushPercent > 1)
+                    throw ex;
+                else
+                {
+                    //int[] emptyConfig = (new int[itemsAmount]).Select(x => 0).ToArray();
+                    //bestConfigs = (new KnapsackConfig[bestConfigsAmount]).Select(x => new KnapsackConfig(emptyConfig)).ToArray();//HACK
+                    emptyBestConfigs();
+                    int startFlushpoint = rand.Next(0, itemsAmount), endPoint, itemsToFlush = (int)(itemsAmount * flushPercent);
+                    if (startFlushpoint + itemsToFlush >= itemsAmount)
+                    {
+                        endPoint = itemsToFlush - (itemsAmount - startFlushpoint);
+                        foreach (var conf in configsPool)
+                        {
+                            for (int i = startFlushpoint; i < itemsAmount; i++)
+                                conf.setValueToPassive(i);
+                            for (int i = 0; i < endPoint; i++)
+                                conf.setValueToPassive(i);
+                        }
+                    }
+                    else
+                    {
+                        endPoint = startFlushpoint + itemsToFlush;
+                        foreach (var conf in configsPool)
+                        {
+                            for (int i = startFlushpoint; i < endPoint; i++)
+                                conf.setValueToPassive(i);
+                        }
+                    }
+                    //Сбрасываем целиком BestConfigs
+                    //Выносим flushpercent для текущих конфигураций в 0. Конфигурации корректны.
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Flush percent is in [0;1]");
+            }
         }
         public void MakeIteration()
         {
@@ -264,14 +308,14 @@ namespace GAMultidimKnapsack
             while (mutatedSack.Equals(sack) && count < 1000000)//TODO - not mutate empty sack
             {
                 mutatedSack.swapValue(mutationPosition);
-                if (!IsValid(mutatedSack))
+                if (!IsValid(mutatedSack))//somehow unrealistic
                 {
                     mutatedSack.swapValue(mutationPosition);
                     mutationPosition = rand.Next(itemsAmount);
-                    count++;
                 }
+                count++;
             }
-            if (count == 1000000)
+            if (count == 100000)
             {
                 return MakeValid(mutatedSack);
             }
