@@ -8,9 +8,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ConsoleKnapsack
+namespace GAMultidimKnapsack
 {
-    partial class SetPartition
+    public partial class SetPartition
     {
 
         static void Algorithm(int itemsAmount, int dimensions, double maxCost, double[] restrictions, double[] costs, double[,] itemsSet)//version w/o restarts.

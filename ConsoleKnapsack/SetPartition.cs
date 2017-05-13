@@ -11,23 +11,23 @@ using System.Threading.Tasks;
 
 namespace GAMultidimKnapsack
 {
-    partial class SetPartition
+    public partial class SetPartition
     {
         static Random rand = new Random();
         static ConcurrentQueue<double> averageValuations = new ConcurrentQueue<double>();
         static ConcurrentQueue<double> maxValuations = new ConcurrentQueue<double>();
         static ConcurrentQueue<double> ages = new ConcurrentQueue<double>();
 
-        static List<string> algorithmWithRestart(int itemsAmount, int dimensions, double maxCost, double[] restrictions, double[] costs, double[,] itemsSet )
+        static List<string> algorithmWithRestart(int itemsAmount, int dimensions, double maxCost, double[] restrictions, double[] costs, double[,] itemsSet)
         {
-            int ConfigsAmount = 10, restartTime=100000, currentMaxValueLiveLength=0;
-            double PrevCost = 0; 
+            int ConfigsAmount = 10, restartTime = 100000, currentMaxValueLiveLength = 0;
+            double PrevCost = 0;
             double mutationPercent = 0.20;//FROM 0 TO 1
             GeneticalAlgorithm ga = new GeneticalAlgorithm(itemsAmount, dimensions, restrictions, costs, itemsSet, ConfigsAmount, GeneticalAlgorithm.TwoPointCrossover, GeneticalAlgorithm.SinglePointMutation, mutationPercent);
-            int iterationNumber = 0, endIteration=10000000;
-            List<double> resetPoints=new List<double>();
-            
-            while (ga.GetAbsoluteMaximalKnapsackCost() != maxCost&&iterationNumber<endIteration)
+            int iterationNumber = 0, endIteration = 10000000;
+            List<double> resetPoints = new List<double>();
+
+            while (ga.GetAbsoluteMaximalKnapsackCost() != maxCost && iterationNumber < endIteration)
             {
                 //var watch = new Stopwatch();
                 //watch.Start();
@@ -56,7 +56,7 @@ namespace GAMultidimKnapsack
                 //        (maxCost - bestCosts[4]));
                 //}
 
-                if (currentMaxValueLiveLength==restartTime)
+                if (currentMaxValueLiveLength == restartTime)
                 {
                     var restartPercent = 0.4;
                     resetPoints.Add(maxCost - ga.GetBestConfigsCosts()[0]);
@@ -69,11 +69,11 @@ namespace GAMultidimKnapsack
                 //  watch.Stop();
             }
             List<string> results = new List<string>();
-            
-            results.Add("Finished in "+ iterationNumber);
+
+            results.Add("Finished in " + iterationNumber);
             string tmpString = "";
             foreach (var x in resetPoints)
-                tmpString+= x.ToString() + ",";
+                tmpString += x.ToString() + ",";
             results.Add(tmpString);
             results.Add(resetPoints.Count.ToString());
             return results;
@@ -84,9 +84,10 @@ namespace GAMultidimKnapsack
             var fs = new FileStream(filename, FileMode.Append);
             using (StreamWriter sw = new StreamWriter(fs))
             {
-                sw.WriteLine(experimentNumber.ToString());
+                sw.WriteLine(experimentNumber.ToString()+')');
                 foreach (var result in results)
                     sw.WriteLine(result);
+                sw.WriteLine();
             }
         }
 
@@ -139,8 +140,8 @@ namespace GAMultidimKnapsack
                             .ToList());
                     double[] restrictions = tempRestrictions.ToArray();
                     //some silly work with reading from file. 
-                    
-                    List<string> resultsList =algorithmWithRestart(itemsAmount, dimensions, maxCost, restrictions, costs, itemsSet);
+
+                    List<string> resultsList = algorithmWithRestart(itemsAmount, dimensions, maxCost, restrictions, costs, itemsSet);
                     WriteResutls(experimentNumber, resultsList, "results.txt");
 
                     Thread.Sleep(3000);
@@ -157,4 +158,5 @@ namespace GAMultidimKnapsack
             ProcessTestSet(@"C:\Users\black_000\Source\Repos\GeneticKnapsack\GAMultidimKnapsack\3.txt", @"C:\Users\black_000\Source\Repos\GeneticKnapsack\GAMultidimKnapsack\_res.txt");
         }
     }
+
 }
