@@ -145,7 +145,7 @@ namespace GAMultidimKnapsack
                             .ToList());
                     double[] restrictions = tempRestrictions.ToArray();
                     //some silly work with reading from file. 
-
+                    //написать перегрузку выбора алгоритма
                     List<string> resultsList = algorithmWithRestart(itemsAmount, dimensions, maxCost, restrictions, costs, itemsSet);
                     WriteResutls(experimentNumber, resultsList, "results.txt");
 

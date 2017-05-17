@@ -15,7 +15,8 @@ namespace GAMultidimKnapsack
         private int configsInPoolAmount;
         private int bestConfigsAmount;
         private KnapsackConfig[] configsPool;
-        private KnapsackConfig[] bestConfigs;//however, this pool is resetted over and over again. We should create a permanent pool for practical use. Possibliy
+        private KnapsackConfig[] currentBestConfigs;//however, this pool is resetted over and over again. We should create a permanent pool for practical use. Possibliy
+        private KnapsackConfig[] bestConfigsAllTime;
         private double maximalKnapsackCost;
 
         private Crossover activeCrossover;
@@ -66,7 +67,9 @@ namespace GAMultidimKnapsack
                 {
                     configsPool[i] = activeMutation(configsPool[0], rand);
                 }
-                emptyBestConfigs();
+                emptyBestConfigs(ref currentBestConfigs);
+                emptyBestConfigs(ref bestConfigsAllTime);
+
                 //int[] emptyConfig = (new int[itemsAmount]).Select(x => 0).ToArray();
                 //bestConfigs = (new KnapsackConfig[bestConfigsAmount]).Select(x => new KnapsackConfig(emptyConfig)).ToArray();//HACK
             }
@@ -77,10 +80,15 @@ namespace GAMultidimKnapsack
             }
         }
 
-        void emptyBestConfigs()
+        //void emptyBestConfigs()
+        //{
+        //    int[] emptyConfig = (new int[itemsAmount]).Select(x => 0).ToArray();
+        //    currentBestConfigs = (new KnapsackConfig[bestConfigsAmount]).Select(x => new KnapsackConfig(emptyConfig)).ToArray();//HACK
+        //}
+        void emptyBestConfigs(ref KnapsackConfig[] targetConfig)
         {
             int[] emptyConfig = (new int[itemsAmount]).Select(x => 0).ToArray();
-            bestConfigs = (new KnapsackConfig[bestConfigsAmount]).Select(x => new KnapsackConfig(emptyConfig)).ToArray();//HACK
+            targetConfig= (new KnapsackConfig[bestConfigsAmount]).Select(x => new KnapsackConfig(emptyConfig)).ToArray();
         }
         public void RestartAlgorithm(double flushPercent)
         {
@@ -93,7 +101,7 @@ namespace GAMultidimKnapsack
                 {
                     //int[] emptyConfig = (new int[itemsAmount]).Select(x => 0).ToArray();
                     //bestConfigs = (new KnapsackConfig[bestConfigsAmount]).Select(x => new KnapsackConfig(emptyConfig)).ToArray();//HACK
-                    emptyBestConfigs();
+                    emptyBestConfigs(ref currentBestConfigs);
                     int startFlushpoint = rand.Next(0, itemsAmount), endPoint, itemsToFlush = (int)(itemsAmount * flushPercent);
                     if (startFlushpoint + itemsToFlush >= itemsAmount)
                     {
@@ -149,22 +157,27 @@ namespace GAMultidimKnapsack
                 .ToArray();
             configsPool = tempConfigs;
 
-            var tunningCoeff = 0.01;
-            if (bestConfigs.Length >= configsPool.Length &&
-                GetKnapsackCost(bestConfigs[0]) * (1 - tunningCoeff) > GetKnapsackCost(configsPool[0]))
+            var tuningCoeff = 0.01;
+            updateConfigs(ref currentBestConfigs, tuningCoeff);
+            updateConfigs(ref bestConfigsAllTime, tuningCoeff);
+        }
+
+        private void updateConfigs(ref KnapsackConfig[] currentPool, double tuningCoeff)
+        {
+            if (currentPool.Length >= configsPool.Length &&
+    GetKnapsackCost(currentPool[0]) * (1 - tuningCoeff) > GetKnapsackCost(configsPool[0]))
             {
                 for (int i = 0; i < configsInPoolAmount; i++)
-                    configsPool[i] = new KnapsackConfig(bestConfigs[i]);
+                    configsPool[i] = new KnapsackConfig(currentPool[i]);
                 return;
             }
-            bestConfigs = bestConfigs
+            currentBestConfigs = currentPool
                 .Concat(configsPool)
                 .OrderByDescending(config => GetKnapsackCost(config))
                 .Distinct()
                 .Take(bestConfigsAmount)
                 .ToArray();
         }
-
         private KnapsackConfig FirstApproachGenerate()
         {
             KnapsackConfig result = new KnapsackConfig(itemsAmount);
@@ -414,7 +427,7 @@ namespace GAMultidimKnapsack
 
         public List<double> GetBestConfigsCosts()
         {
-            return bestConfigs.Select(x => GetKnapsackCost(x)).ToList();
+            return currentBestConfigs.Select(x => GetKnapsackCost(x)).ToList();
         }
     }
 }
