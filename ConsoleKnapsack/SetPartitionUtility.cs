@@ -127,7 +127,7 @@ namespace GAMultidimKnapsack
             }
         }
 
-        static void multiThreadAlgorithms(int itemsAmount, int dimensions, double maxCost, double[] restrictions, double[] costs, double[,] itemsSet)//launches multiple algorithms with different start approximations. Does not work
+        static List<string> multiThreadAlgorithms(int itemsAmount, int dimensions, double maxCost, double[] restrictions, double[] costs, double[,] itemsSet)//launches multiple algorithms with different start approximations. Does not work
         {
             int ConfigsAmount = 10, algorithmsNumber = 3;
             double mutationPercent = 0.20;
@@ -143,23 +143,24 @@ namespace GAMultidimKnapsack
                 Parallel.ForEach(gas, ga =>
                 //foreach(GeneticalAlgorithm ga in gas)
                 {
-                    ga.MakeIteration();
-                    if (iterationNumber % 10 == 0)
-                    {
-                        Console.WriteLine(iterationNumber + ") delta with avg is " + (maxCost - ga.GetAbsoluteAverageKnapsackCost()) + "\n delta with max is " + (maxCost - ga.GetAbsoluteMaximalKnapsackCost()));
-                        var bestCosts = ga.GetBestConfigsCosts();
-                        Console.WriteLine("Top 3 of the best configs pool are {0}, {1}, {2}",
-                            (maxCost - bestCosts[0]),
-                            (maxCost - bestCosts[1]),
-                            (maxCost - bestCosts[2]));
-                    }
+                    ga.MakeIteration();                   
                 });
+
                 iterationNumber++;
+                if (iterationNumber%10==0)
+                    Console.WriteLine(iterationNumber);
             }
+
             controlWatch.Stop();
-            using (StreamWriter file1 = new StreamWriter(@"C:\Users\black_000\Documents\visual studio 2015\Projects\ConsoleKnapsack\ConsoleKnapsack\out.txt", true))
-                file1.WriteLine(iterationNumber + " iterations, " + controlWatch.ElapsedMilliseconds + " ms");
+            List<string> t=new List<string>();
+            t.Add(iterationNumber.ToString());
+            return t; 
         }
+
+       // transformResults
+        //    using (StreamWriter file1 = new StreamWriter(@"C:\Users\black_000\Documents\visual studio 2015\Projects\ConsoleKnapsack\ConsoleKnapsack\out.txt", true))
+        //        file1.WriteLine(iterationNumber + " iterations, " + controlWatch.ElapsedMilliseconds + " ms");
+        //}
 
     }
 }

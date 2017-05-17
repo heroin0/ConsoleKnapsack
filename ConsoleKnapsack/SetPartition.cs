@@ -43,19 +43,19 @@ namespace GAMultidimKnapsack
                 {
                     currentMaxValueLiveLength++;
                 }
-
-                //if (iterationNumber % 10000 == 0)//Отрисовка
-                //{
-                //    Console.Write(iterationNumber + ") ");// delta with avg is " + (maxCost - ga.GetAbsoluteAverageKnapsackCost()) + "\n delta with max is " + (maxCost - ga.GetAbsoluteMaximalKnapsackCost()));
-                //    var bestCosts = ga.GetBestConfigsCosts();
-                //    Console.WriteLine("Top 3 of the best configs pool are {0}, {1}, {2}, {3}, {4}",
-                //        (maxCost - bestCosts[0]),
-                //        (maxCost - bestCosts[1]),
-                //        (maxCost - bestCosts[2]),
-                //        (maxCost - bestCosts[3]),
-                //        (maxCost - bestCosts[4]));
-                //}
-
+                /*
+                if (iterationNumber % 10000 == 0)//Отрисовка
+                {
+                    Console.Write(iterationNumber + ") ");// delta with avg is " + (maxCost - ga.GetAbsoluteAverageKnapsackCost()) + "\n delta with max is " + (maxCost - ga.GetAbsoluteMaximalKnapsackCost()));
+                    var bestCosts = ga.GetBestConfigsCosts();
+                    Console.WriteLine("Top 3 of the best configs pool are {0}, {1}, {2}, {3}, {4}",
+                        (maxCost - bestCosts[0]),
+                        (maxCost - bestCosts[1]),
+                        (maxCost - bestCosts[2]),
+                        (maxCost - bestCosts[3]),
+                        (maxCost - bestCosts[4]));
+                }
+                */
                 if (currentMaxValueLiveLength == restartTime)
                 {
                     var restartPercent = 0.4;
@@ -68,9 +68,14 @@ namespace GAMultidimKnapsack
                 }
                 //  watch.Stop();
             }
-            List<string> results = new List<string>();
+           
+            return transformResults(iterationNumber,resetPoints);
+        }
 
-            results.Add("Finished in " + iterationNumber);
+        static List<string> transformResults(int finishingIteration, List<double> resetPoints)
+        {
+            List<string> results = new List<string>();
+            results.Add("Finished in " + finishingIteration);
             string tmpString = "";
             foreach (var x in resetPoints)
                 tmpString += x.ToString() + ",";

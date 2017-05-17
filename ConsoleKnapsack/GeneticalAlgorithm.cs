@@ -15,7 +15,7 @@ namespace GAMultidimKnapsack
         private int configsInPoolAmount;
         private int bestConfigsAmount;
         private KnapsackConfig[] configsPool;
-        private KnapsackConfig[] bestConfigs;
+        private KnapsackConfig[] bestConfigs;//however, this pool is resetted over and over again. We should create a permanent pool for practical use. Possibliy
         private double maximalKnapsackCost;
 
         private Crossover activeCrossover;
@@ -305,7 +305,8 @@ namespace GAMultidimKnapsack
             KnapsackConfig mutatedSack = new KnapsackConfig(sack);//copy constructor
             int mutationPosition = rand.Next(itemsAmount);
             var count = 0;
-            while (mutatedSack.Equals(sack) && count < 1000000)//TODO - not mutate empty sack
+            var iterationsToResque = 100000;
+            while (mutatedSack.Equals(sack) && count < iterationsToResque)//TODO - not mutate empty sack
             {
                 mutatedSack.swapValue(mutationPosition);
                 if (!IsValid(mutatedSack))//somehow unrealistic
@@ -315,7 +316,7 @@ namespace GAMultidimKnapsack
                 }
                 count++;
             }
-            if (count == 100000)
+            if (count == iterationsToResque)
             {
                 return MakeValid(mutatedSack);
             }

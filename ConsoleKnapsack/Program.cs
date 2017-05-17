@@ -8,7 +8,7 @@ using static System.Net.WebRequestMethods;
 
 namespace GAMultidimKnapsack
 {
-
+    //this whole file processes 1st file  with fixed settings.
     class Program
     {
         private static List<long>[] averageTime=new List<long>[7];
